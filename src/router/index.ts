@@ -10,9 +10,13 @@ Vue.use(VueRouter);
 const routes: Array<RouteConfig> = [
 
     {
+        path: '/',
+        redirect: '/step1'
+    },
+    {
         path: '/step1',
         name: 'Step1',
-        component: Step1
+        component: Step1,
     },
     {
         path: '/step2',

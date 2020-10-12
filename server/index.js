@@ -48,18 +48,25 @@ const updateCount = roomName => {
   }
 
 
+const initRoomData = {
+    users: [],
+    userAdmin: null,
+    isVoting: false,
+    userVotes: {}
+};
+
 let rooms = [
     {
         name: 'Platform',
-        users: []
+        ...initRoomData
     },
     {
         name: 'Api',
-        users: []
+        ...initRoomData
     },
     {
         name: 'Layout',
-        users: []
+        ...initRoomData
     }
 ];
 const activeUsers = {};
@@ -78,16 +85,27 @@ const leaveRoom = (socket, socketRoom) => {
     rooms = rooms.map(room => {
         let users = room.users;
         if (room.name === socketRoom) {
-            users = room.users.filter(user => user.userName !== socket.userName);
+            users = room.users.filter(user => user !== socket.userName);
         }
 
         return {
             ...room,
-            users
+            users,
+            userAdmin: users.length ? room.userAdmin : null
         }
     });
     socket.leave(socketRoom);
-}
+};
+
+const getRoomDetails = (roomName) => {
+    const room = rooms.find(room => room.name === roomName);
+    const users = room.users.map(userName => (activeUsers[userName]));
+
+    return {
+        ...room,
+        users
+    }
+};
 
 io.on('connection', socket => {
 
@@ -116,41 +134,106 @@ io.on('connection', socket => {
     socket.on('new-user', function (data) {
         socket.userName = create_UUID();
         activeUsers[socket.userName] = {
+            id: socket.userName,
             userName: data,
             room: null
         };
-        io.emit('new-user', activeUsers);
+        socket.emit('me', activeUsers[socket.userName]);
     });
 
     socket.on('update-user', function (data) {
         activeUsers[socket.userName] = {
+            ...activeUsers[socket.userName],
             userName: data,
             room: null
         };
+        io.emit('me', activeUsers[socket.userName]);
     });
 
     socket.on("get-rooms", function () {
         io.emit("send-rooms", rooms);
     });
 
-    socket.on("get-users-in-room", function (roomName) {
-        const users = rooms.find(room => room.name === roomName).users.map(userName => activeUsers[userName]);
-        io.sockets.in(roomName).emit("send-users-in-room", users);
+    socket.on("get-room", function (roomName) {
+        const response = getRoomDetails(roomName);
+        io.emit("send-room", response);
     });
 
+    socket.on("start-voting", function (roomName) {
+        const response = getRoomDetails(roomName);
+
+        const room = {
+            ...response,
+            isVoting: true,
+            userVotes: {}
+        };
+
+
+        // const users = room.users.map(userName => (activeUsers[userName]));
+
+        io.sockets.in(roomName).emit('voting-stated', room);
+    });
+
+    socket.on("end-voting", function (roomName) {
+        const response = getRoomDetails(roomName);
+
+        const room = {
+            ...response,
+            isVoting: false
+        };
+
+        // const users = room.users.map(userName => (activeUsers[userName]));
+
+        io.sockets.in(roomName).emit('voting-ended', room);
+    });
+    socket.on("vote", function (points) {
+        const roomName = activeUsers[socket.userName].room
+        const response = getRoomDetails(roomName);
+
+        const roomInfo = {
+            ...response,
+            userVotes: {
+                ...response.userVotes,
+                [socket.userName]: points
+            }
+        };
+
+        // Todo: function to save rooms info
+        rooms = rooms.map(room => ({
+            ...room,
+            userVotes: room.name === roomName ? roomInfo.userVotes : room.userVotes
+        }));
+
+        // const users = room.users.map(userName => (activeUsers[userName]));
+
+        // io.sockets.in(roomName).emit('voting-ended', room);
+    });
+
+
+
+    // socket.on("get-users-in-room", function (roomName) {
+    //     const users = rooms.find(room => room.name === roomName).users.map(userName => ({
+    //         ...activeUsers[userName],
+    //         userAdmin: rooms.find(room => room.name === roomName).userAdmin
+    //     }));
+    //     io.sockets.in(roomName).emit("send-users-in-room", users);
+    // });
+
     socket.on("join-room", function (data) {
-        if (activeUsers[data.userName] && activeUsers[data.userName].room) {
+        if (activeUsers[socket.userName] && activeUsers[socket.userName].room) {
             leaveRoom(socket, activeUsers[socket.userName].room);
         }
-        socket.userName = data.userName;
-        activeUsers[data.userName] = {
-            userName: data.userName,
+        // socket.userName = socket.userName;
+        activeUsers[socket.userName] = {
+            ...activeUsers[socket.userName],
+            // userName: data.userName,
             room: data.roomName
         }
         socket.join(data.roomName);
         rooms = rooms.map(room => ({
             ...room,
-            users: (room.name === data.roomName && !room.users.find(user => user === data.userName)) ? [...room.users, socket.userName] : room.users
+            userAdmin: room.userAdmin ? room.userAdmin : (room.name === data.roomName) ? socket.userName : null,
+            users: (room.name === data.roomName && !room.users.find(user => user === socket.userName)) ? [...room.users, socket.userName] : room.users
         }));
         io.emit('send-rooms', rooms);
     });

@@ -1,10 +1,10 @@
-import { Component, Vue } from 'vue-property-decorator';
 import io from 'socket.io-client';
+import { Vue } from 'vue-property-decorator';
 
-@Component({
+export default Vue.extend({
     components: {
     },
-    data: () => ({
+    data: (): any => ({
         socket: null,
         roomName: '',
         users: [],
@@ -39,7 +39,7 @@ import io from 'socket.io-client';
 
         // Remove user when is disconnected
         this.socket.on('user disconnected', (userName: string) => {
-            this.users = this.users.filter(user => user !== userName)
+            this.users = this.users.filter((user: any) => user !== userName)
         });
 
 
@@ -85,7 +85,7 @@ import io from 'socket.io-client';
          * Add user to local array
          * @param userName string
          */
-        addToUsers: function(userName) {
+        addToUsers: function(userName: any) {
             this.users = [...this.users, userName]
         },
         sendMessage: function() {
@@ -106,15 +106,14 @@ import io from 'socket.io-client';
         createRoom: function() {
             this.socket.emit('createRoom', this.roomName);
 
-            this.socket.on('createRoom', function(data) {
+            this.socket.on('createRoom', function(data: any) {
                 console.log(data);
 
             });
-            this.socket.on(this.roomName, function(data) {
+            this.socket.on(this.roomName, function(data: any) {
                 console.log(data);
 
             });
         }
     }
 })
-export default class Home extends Vue {}

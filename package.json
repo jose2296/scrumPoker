@@ -5,11 +5,14 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start-server": "nodemon server/index.js"
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "nodemon": "^2.0.4",
     "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.1",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
@@ -18,6 +21,7 @@
     "ws": "^7.3.1"
   },
   "devDependencies": {
+    "@types/socket.io-client": "^1.4.34",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -49,7 +53,16 @@
       "ecmaVersion": 2020
     },
     "rules": {
-      "@typescript-eslint/no-this-alias": [ "off", { "allowDestructuring": true, "allowedNames": ["self", "that"] } ]
+      "@typescript-eslint/no-this-alias": [
+        "off",
+        {
+          "allowDestructuring": true,
+          "allowedNames": [
+            "self",
+            "that"
+          ]
+        }
+      ]
     }
   },
   "browserslist": [
