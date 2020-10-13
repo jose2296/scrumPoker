@@ -88,6 +88,7 @@ const leaveRoom = (socket, socketRoom) => {
             users = room.users.filter(user => user !== socket.userName);
         }
 
+        delete room.userVotes[socket.userName];
         return {
             ...room,
             users,
@@ -206,7 +207,10 @@ io.on('connection', socket => {
 
         // const users = room.users.map(userName => (activeUsers[userName]));
 
-        // io.sockets.in(roomName).emit('voting-ended', room);
+        io.sockets.in(roomName).emit('votes', roomInfo.userVotes);
+        if (Object.keys(roomInfo.userVotes).length === roomInfo.users.length) {
+            io.sockets.in(roomName).emit('voting-ended', roomInfo);
+        }
     });
 
 
