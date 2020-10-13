@@ -98,10 +98,15 @@ const leaveRoom = (socket, socketRoom) => {
     socket.leave(socketRoom);
 };
 
-const getRoomDetails = (roomName) => {
+const getRoomDetails = (roomName, restart) => {
     const room = rooms.find(room => room.name === roomName);
     const users = room.users.map(userName => (activeUsers[userName]));
-
+    if (restart) {
+        rooms = rooms.map(_room => ({
+            ..._room,
+            userVotes: _room.name === room.name ? {} : _room.userVotes
+        }))
+    }
     return {
         ...room,
         users
@@ -161,7 +166,7 @@ io.on('connection', socket => {
     });
 
     socket.on("start-voting", function (roomName) {
-        const response = getRoomDetails(roomName);
+        const response = getRoomDetails(roomName, true);
 
         const room = {
             ...response,
@@ -172,7 +177,7 @@ io.on('connection', socket => {
 
         // const users = room.users.map(userName => (activeUsers[userName]));
 
-        io.sockets.in(roomName).emit('voting-stated', room);
+        io.sockets.in(roomName).emit('voting-started', room);
     });
 
     socket.on("end-voting", function (roomName) {

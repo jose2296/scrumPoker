@@ -63,27 +63,22 @@ export default Vue.extend({
             });
 
 
-            self.socket.on('voting-stated', (roomInfo: any) => {
+            self.socket.on('voting-started', (roomInfo: any) => {
                 self.room = roomInfo;
-
-                console.log('voting-stated');
+                this.waitingUsers = false;
                 this.voteStatus = 'voting';
             });
 
             self.socket.on('voting-ended', (roomInfo: any) => {
                 self.room = roomInfo;
-
-                console.log('voting-ended', roomInfo);
                 this.voteStatus = 'voted';
             });
 
             self.socket.on('votes', function(data: any) {
-                console.log('data', data);
                 self.userVotes = data;
             });
         },
         handleVoteButton: function(start: boolean) {
-            console.log(this.room.isVoting);
             if (start) {
                 this.voteStatus = 'voting';
                 this.socket.emit('start-voting', this.room.name);
@@ -95,6 +90,11 @@ export default Vue.extend({
         vote: function(card: Card) {
             this.waitingUsers = true;
             this.socket.emit('vote', card.points);
+        },
+        handleNewVote: function () {
+            this.waitingUsers = false;
+            this.voteStatus = 'voting';
+            this.socket.emit('start-voting', this.room.name);
         }
     }
 })

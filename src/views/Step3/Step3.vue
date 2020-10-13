@@ -36,8 +36,6 @@
             </div>
 
 
-
-
             <div v-if="room.userAdmin === wsUser.id" class="admin-options">
                 <button @click="handleVoteButton(false)">Finish votation</button>
             </div>
@@ -55,6 +53,8 @@
                     userVotes[user.id] ? '-> ' + userVotes[user.id] : ''
                 }}
             </div>
+
+            <button v-if="room.userAdmin === wsUser.id" @click="handleNewVote()">Start new vote</button>
         </div>
 
         <div v-if="voteStatus === 'ready-to-vote'" class="wait-user">
