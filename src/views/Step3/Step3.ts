@@ -1,4 +1,5 @@
 import { Vue } from 'vue-property-decorator';
+import card from '../../components/Card/Card.vue';
 
 interface Card {
     points: number;
@@ -6,11 +7,13 @@ interface Card {
 }
 
 export default Vue.extend({
-    data: (): { room: any; socket: any; wsUser: any; isVoting: boolean; cards: Card[] } => ({
+    components: {
+        card
+    },
+    data: (): { room: any; socket: any; wsUser: any; cards: Card[]; waitingUsers: boolean; voteStatus: string; userVotes: any } => ({
         room: null,
         socket: null,
         wsUser: null,
-        isVoting: false,
         cards: [
             {
                 label: '1',
@@ -24,7 +27,10 @@ export default Vue.extend({
                 label: '3',
                 points: 3
             }
-        ]
+        ],
+        waitingUsers: false,
+        voteStatus: 'ready-to-vote',
+        userVotes: {}
     }),
     created: function() {
         if (this.$store.state.currentStep < 3) {
@@ -61,27 +67,34 @@ export default Vue.extend({
                 self.room = roomInfo;
 
                 console.log('voting-stated');
-                this.isVoting = true;
+                this.voteStatus = 'voting';
             });
 
             self.socket.on('voting-ended', (roomInfo: any) => {
                 self.room = roomInfo;
 
                 console.log('voting-ended', roomInfo);
-                this.isVoting = false;
+                this.voteStatus = 'voted';
+            });
+
+            self.socket.on('votes', function(data: any) {
+                console.log('data', data);
+                self.userVotes = data;
             });
         },
-        handleVoteButton: function() {
+        handleVoteButton: function(start: boolean) {
             console.log(this.room.isVoting);
-            if (!this.room.isVoting) {
+            if (start) {
+                this.voteStatus = 'voting';
                 this.socket.emit('start-voting', this.room.name);
                 return;
             }
+            this.voteStatus = 'ended';
             this.socket.emit('end-voting', this.room.name);
         },
-        vote: function(points: number) {
-            console.log(points);
-            this.socket.emit('vote', points);
+        vote: function(card: Card) {
+            this.waitingUsers = true;
+            this.socket.emit('vote', card.points);
         }
     }
 })
