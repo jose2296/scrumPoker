@@ -20,7 +20,7 @@ export default Vue.extend({
         console.log('Room id: ', this.roomId);
 
         // Init ws
-        this.socket = io('ws://localhost:8888');
+        this.socket = io('https://scrumpoker-app.herokuapp.com/');
 
         // Init connection
         this.socket.on('connect', function(data: any) {
