@@ -1,12 +1,13 @@
-import { Component, Vue } from 'vue-property-decorator';
-import io from 'socket.io-client';
+import { Vue } from 'vue-property-decorator';
 
 interface Room {
     name: string;
     users: string[];
 }
-@Component({
-    data: () => ({
+
+export default Vue.extend({
+    data: (): { socket: any } => ({
+        socket: null
     }),
     created: function() {
         if (this.$store.state.wsUser.room) {
@@ -32,12 +33,10 @@ interface Room {
 
             // Obtain rooms
             self.socket.on('send-rooms', (rooms: Room[]) => {
-                console.log(rooms);
-
                 self.$store.commit('setRooms', rooms);
             });
         },
-        joinRoom: function(roomName) {
+        joinRoom: function(roomName: any) {
             const self = this;
             this.socket.emit('join-room', {
                 userName: self.$store.state.userName,
@@ -53,4 +52,3 @@ interface Room {
         }
     }
 })
-export default class Step2 extends Vue {}

@@ -1,9 +1,9 @@
-import { Component, Vue } from 'vue-property-decorator';
-import io from 'socket.io-client';
+import { Vue } from 'vue-property-decorator';
 
-@Component({
-    data: () => ({
-        userName: ''
+export default Vue.extend({
+    data: (): { userName: string; socket: any } => ({
+        userName: '',
+        socket: null
     }),
     created: function() {
         this.userName = this.$store.state.userName;
@@ -23,6 +23,9 @@ import io from 'socket.io-client';
                     this.socket.emit('update-user', this.userName);
                 } else {
                     self.socket.emit('new-user', this.userName);
+                    self.socket.on('me', (user: any) => {
+                        this.$store.commit('setWsUserId', user.id);
+                    });
                 }
                 this.$store.commit('setWsUser', this.userName);
                 this.$store.commit('nextStep', 2);
@@ -31,4 +34,3 @@ import io from 'socket.io-client';
         }
     }
 })
-export default class Step2 extends Vue {}

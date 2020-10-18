@@ -1,8 +1,9 @@
-import { Component, Vue } from 'vue-property-decorator';
 import io from 'socket.io-client';
+import { Vue } from 'vue-property-decorator';
 
-@Component({
-    data: () => ({
+export default Vue.extend({
+    data: (): { socket: any } => ({
+        socket: null
     }),
     created: function() {
         this.socket = io('ws://localhost:8888');
@@ -12,4 +13,3 @@ import io from 'socket.io-client';
     methods: {
     }
 })
-export default class Step2 extends Vue {}
