@@ -6,7 +6,9 @@ export default Vue.extend({
         socket: null
     }),
     created: function() {
-        this.socket = io('https://scrumpoker-app.herokuapp.com');
+        console.log(process.env);
+
+        this.socket = io(process.env.VUE_APP_api_url);
 
         this.$store.commit('setSocket', this.socket)
     },
