@@ -36,19 +36,25 @@ export default Vue.extend({
                 self.$store.commit('setRooms', rooms);
             });
         },
-        joinRoom: function(roomName: any) {
+        joinRoom: function(roomId: any) {
             const self = this;
             this.socket.emit('join-room', {
                 userName: self.$store.state.userName,
-                roomName
+                roomId
             });
-            self.$store.commit('setCurrentRoom', roomName);
+            self.$store.commit('setCurrentRoom', roomId);
             this.$store.commit('nextStep', 3);
             this.$router.push({ name: 'Step3' });
         },
         createRoom: function() {
             console.log('TODO: Create room');
 
+        },
+        getUsersInRoom: (users: any) => {
+            if (users) {
+                return Object.keys(users).length;
+            }
+            return 0;
         }
     }
 })

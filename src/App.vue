@@ -3,9 +3,9 @@
         <div id="nav">
             <router-link to="/step1">Step 1</router-link> |
             <router-link to="/step2" v-bind:class="{ inactive: $store.state.currentStep < 2 }">Step 2</router-link> |
-            <router-link to="/step3" v-bind:class="{ inactive: $store.state.currentStep < 3 }">Step 3</router-link> |
-            <router-link to="/home">Home</router-link> |
-            <router-link to="/about">About</router-link>
+            <router-link to="/step3" v-bind:class="{ inactive: $store.state.currentStep < 3 }">Step 3</router-link>
+            <!-- <router-link to="/home">Home</router-link> |
+            <router-link to="/about">About</router-link> -->
         </div>
         <router-view />
     </div>
@@ -14,6 +14,7 @@
 <script src="./App.ts"></script>
 
 <style lang="sass">
+
 #app
     font-family: Avenir, Helvetica, Arial, sans-serif
     -webkit-font-smoothing: antialiased

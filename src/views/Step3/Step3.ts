@@ -58,6 +58,8 @@ export default Vue.extend({
 
             // Obtain rooms
             self.socket.on('send-room', (roomInfo: any) => {
+                console.log(roomInfo);
+
                 self.room = roomInfo;
                 // self.$store.commit('setCurrentRoom', users);
             });
