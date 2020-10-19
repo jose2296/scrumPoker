@@ -57,9 +57,10 @@
             <button v-if="room.userAdmin === wsUser.id" @click="handleNewVote()">Start new vote</button>
         </div>
 
+        <p>{{voteStatus}}</p>
         <div v-if="voteStatus === 'ready-to-vote'" class="wait-user">
 
-            <div v-if="room.userAdmin === wsUser.id" class="admin-options">
+            <div class="admin-options">
                 <button @click="handleVoteButton(true)">Start voting</button>
             </div>
         </div>

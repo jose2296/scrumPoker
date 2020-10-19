@@ -1,6 +1,10 @@
 import { Vue } from 'vue-property-decorator';
+import card from '../../components/Card/Card.vue';
 
 export default Vue.extend({
+    components: {
+        card
+    },
     data: (): { userName: string; socket: any } => ({
         userName: '',
         socket: null

@@ -4,6 +4,7 @@ import card from '../../components/Card/Card.vue';
 interface Card {
     points: number;
     label: string;
+    type: 'type-1' | 'type-2' | 'type-3';
 }
 
 export default Vue.extend({
@@ -17,15 +18,18 @@ export default Vue.extend({
         cards: [
             {
                 label: '1',
-                points: 1
+                points: 1,
+                type: 'type-1'
             },
             {
                 label: '2',
-                points: 2
+                points: 2,
+                type: 'type-2'
             },
             {
                 label: '3',
-                points: 3
+                points: 3,
+                type: 'type-3'
             }
         ],
         waitingUsers: false,

@@ -1,5 +1,5 @@
 <template>
-  <div class="card" v-bind:class="{ 'flip': flipped, 'disabled': disabled }" @click="cardClick()">
+  <div class="card" v-bind:class="{ 'flip': flipped, 'disabled': disabled, [data.type]: true }" @click="cardClick()">
     <div class="inner">
       <div class="front">
         <div class="text">{{ data.label }}</div>
@@ -12,6 +12,7 @@
 <script src="./Card.ts"></script>
 
 <style scoped>
+
 .card {
   --front-card-background-color: linear-gradient(
     to bottom right,
@@ -62,58 +63,24 @@
   justify-content: center;
   color: white;
   font-size: 25px;
-  background: radial-gradient(
-        1.5em 6.28571em at 1.95em,
-        rgba(255, 255, 255, 0) 50%,
-        rgba(255, 255, 255, 0.25) 50%,
-        rgba(255, 255, 255, 0.25) 55%,
-        rgba(255, 255, 255, 0) 55%
-      )
-      0 0,
-    radial-gradient(
-        1.5em 6.28571em at -0.45em,
-        rgba(255, 255, 255, 0) 50%,
-        rgba(255, 255, 255, 0.25) 50%,
-        rgba(255, 255, 255, 0.25) 55%,
-        rgba(255, 255, 255, 0) 55%
-      )
-      1.5em 5.5em,
-    radial-gradient(
-        2.3em 4.57143em at 2.99em,
-        rgba(255, 255, 255, 0) 50%,
-        rgba(255, 255, 255, 0.3) 50%,
-        rgba(255, 255, 255, 0.3) 55%,
-        rgba(255, 255, 255, 0) 55%
-      )
-      0 0,
-    radial-gradient(
-        2.3em 4.57143em at -0.69em,
-        rgba(255, 255, 255, 0) 50%,
-        rgba(255, 255, 255, 0.3) 50%,
-        rgba(255, 255, 255, 0.3) 55%,
-        rgba(255, 255, 255, 0) 55%
-      )
-      2.3em 4em,
-    radial-gradient(
-        3.5em 6.28571em at 4.55em,
-        rgba(255, 255, 255, 0) 50%,
-        rgba(255, 255, 255, 0.25) 50%,
-        rgba(255, 255, 255, 0.25) 55%,
-        rgba(255, 255, 255, 0) 55%
-      )
-      0 0,
-    radial-gradient(
-        3.5em 6.28571em at -1.05em,
-        rgba(255, 255, 255, 0) 50%,
-        rgba(255, 255, 255, 0.25) 50%,
-        rgba(255, 255, 255, 0.25) 55%,
-        rgba(255, 255, 255, 0) 55%
-      )
-      3.5em 5.5em,
-    radial-gradient(#15ffa5, #00ced1);
   background-color: #ffffff;
-  background-size: 100%;
+  background-size: 100% 100%;
 }
+
+.card.type-1 .inner .back {
+  background-image: url('../../assets/images/cactus.png');
+
+}
+.card.type-2 .inner .back {
+  background-image: url('../../assets/images/bolos.png');
+}
+
+.card.type-3 .inner .back {
+  background-image: url('../../assets/images/halloween.png');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+
 .card .inner .back .image {
   transform: rotate(-60deg);
   width: 125px;
@@ -151,7 +118,7 @@
 }
 .card.flip .inner {
   transform: scale(1) rotateY(180deg);
-  box-shadow: 5px 5px 40px black;
+  box-shadow: 5px 5px 25px black;
 }
 .container .buttons-container {
   display: flex;
