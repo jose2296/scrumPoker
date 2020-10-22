@@ -1,22 +1,26 @@
 <template>
     <div class="step3" v-if="!!room">
 
-        <h1>{{ voteStatus }}</h1>
+        <hr>
+        <h3>ME: {{ wsUser.id }} | {{ wsUser.name }}</h3>
+        <hr>
+        <h1>{{ room.status }}</h1>
 
 
         <h1>Room: {{ room.name }}</h1>
+        <p>{{ room.adminUser}} </p>
         <h4>Users:</h4>
         <div
             class="user"
             v-for="(user, index) in room.users"
             v-bind:key="index"
         >
-            {{ user.userName }} {{ user.id === room.userAdmin ? '(Admin)' : '' }}
+            {{ user.name }} {{ user.id === room.adminUser ? '(Admin)' : '' }}
         </div>
 
 
         <!-- VOTING -->
-        <div v-if="voteStatus === 'voting'" class="wait-user">
+        <div v-if="room.status === 'voting'" class="wait-user">
             <div class="voting-container">
                 <card v-for="(card, index) in cards" :data="card" :disabled="!!waitingUsers" v-bind:key="index" @cardClick="vote" />
             </div>
@@ -30,35 +34,34 @@
                 v-for="(user, index) in room.users"
                 v-bind:key="index"
             >
-                {{ user.userName }} {{ user.id === room.userAdmin ? '(Admin)' : '' }} {{
+                {{ user.name }} {{ user.id === room.adminUser ? '(Admin)' : '' }} {{
                     userVotes[user.id] ? '-> ' + 'Voted' : 'Pending to vote'
                 }}
             </div>
 
 
-            <div v-if="room.userAdmin === wsUser.id" class="admin-options">
+            <div v-if="room.adminUser === wsUser.id" class="admin-options">
                 <button @click="handleVoteButton(false)">Finish votation</button>
             </div>
         </div>
 
         <!-- VOTED -->
-        <div v-if="voteStatus === 'voted'" class="wait-user">
+        <div v-if="room.status === 'voted'" class="wait-user">
             <h3>Vote results: </h3>
             <div
                 class="user"
                 v-for="(user, index) in room.users"
                 v-bind:key="index"
             >
-                {{ user.userName }} {{ user.id === room.userAdmin ? '(Admin)' : '' }} {{
-                    userVotes[user.id] ? '-> ' + userVotes[user.id] : ''
+                {{ user.name }} {{ user.id === room.adminUser ? '(Admin)' : '' }} {{
+                    room.userVotes[user.id] ? '-> ' + room.userVotes[user.id] : ''
                 }}
             </div>
 
-            <button v-if="room.userAdmin === wsUser.id" @click="handleNewVote()">Start new vote</button>
+            <button v-if="room.adminUser === wsUser.id" @click="handleNewVote()">Start new vote</button>
         </div>
 
-        <p>{{voteStatus}}</p>
-        <div v-if="voteStatus === 'ready-to-vote'" class="wait-user">
+        <div v-if="room.status === 'ready-to-vote' && room.adminUser === wsUser.id" class="wait-user">
 
             <div class="admin-options">
                 <button @click="handleVoteButton(true)">Start voting</button>
@@ -72,6 +75,7 @@
 <style lang="sass" scoped>
     .voting-container
         display: flex
+        flex-wrap: wrap
         justify-content: center
         margin: 50px 0 100px 0
 </style>

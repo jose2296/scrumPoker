@@ -36,18 +36,8 @@ export default new Vuex.Store({
         setSocket: (state, socket) => {
             state.socket = socket;
         },
-        setWsUser: (state, userName) => {
-            state.wsUser = {
-                ...state.wsUser,
-                userName,
-                room: state.wsUser.room || null
-            };
-        },
-        setWsUserId: (state, id) => {
-            state.wsUser = {
-                ...state.wsUser,
-                id
-            };
+        setWsUser: (state, user) => {
+            state.wsUser = user;
         }
     },
     actions: {

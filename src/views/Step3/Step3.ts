@@ -11,29 +11,12 @@ export default Vue.extend({
     components: {
         card
     },
-    data: (): { room: any; socket: any; wsUser: any; cards: Card[]; waitingUsers: boolean; voteStatus: string; userVotes: any } => ({
+    data: (): { room: any; socket: any; wsUser: any; cards: Card[]; waitingUsers: boolean; userVotes: any } => ({
         room: null,
         socket: null,
         wsUser: null,
-        cards: [
-            {
-                label: '1',
-                points: 1,
-                type: 'type-1'
-            },
-            {
-                label: '2',
-                points: 2,
-                type: 'type-2'
-            },
-            {
-                label: '3',
-                points: 3,
-                type: 'type-3'
-            }
-        ],
+        cards: [],
         waitingUsers: false,
-        voteStatus: 'ready-to-vote',
         userVotes: {}
     }),
     created: function() {
@@ -50,7 +33,7 @@ export default Vue.extend({
         connectWebSocket: function() {
             const self = this;
 
-            self.socket.emit('get-room', self.$store.state.currentRoom);
+            self.socket.emit('get-room', self.$store.state.currentRoom.id);
             // self.socket.emit('get-users-in-room', self.$store.state.currentRoom);
 
             // // Obtain rooms
@@ -61,10 +44,11 @@ export default Vue.extend({
             // });
 
             // Obtain rooms
-            self.socket.on('send-room', (roomInfo: any) => {
-                console.log(roomInfo);
+            self.socket.on('send-room', (roomInfo: any, cards: Card[]) => {
+                console.log(roomInfo, cards);
 
                 self.room = roomInfo;
+                self.cards = cards;
                 // self.$store.commit('setCurrentRoom', users);
             });
 
@@ -72,12 +56,10 @@ export default Vue.extend({
             self.socket.on('voting-started', (roomInfo: any) => {
                 self.room = roomInfo;
                 this.waitingUsers = false;
-                this.voteStatus = 'voting';
             });
 
             self.socket.on('voting-ended', (roomInfo: any) => {
                 self.room = roomInfo;
-                this.voteStatus = 'voted';
             });
 
             self.socket.on('votes', function(data: any) {
@@ -86,12 +68,10 @@ export default Vue.extend({
         },
         handleVoteButton: function(start: boolean) {
             if (start) {
-                this.voteStatus = 'voting';
-                this.socket.emit('start-voting', this.room.name);
+                this.socket.emit('start-voting', this.room.id);
                 return;
             }
-            this.voteStatus = 'ended';
-            this.socket.emit('end-voting', this.room.name);
+            this.socket.emit('end-voting', this.room.id);
         },
         vote: function(card: Card) {
             this.waitingUsers = true;
@@ -99,8 +79,7 @@ export default Vue.extend({
         },
         handleNewVote: function () {
             this.waitingUsers = false;
-            this.voteStatus = 'voting';
-            this.socket.emit('start-voting', this.room.name);
+            this.socket.emit('start-voting', this.room.id);
         }
     }
 })

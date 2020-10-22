@@ -8,7 +8,7 @@
         <hr style="width: 100%">
         <div class="room" v-for="(room, key) in $store.state.rooms" v-bind:key="key">
             <div class="name">
-                {{ room.name }} ({{ getUsersInRoom(room.users) }})
+                {{ room.name }} ({{ getUsersInRoom(room.users) }}) ➡ [{{ room.status }}]
             </div>
             <button @click="joinRoom(room.id)">Join</button>
         </div>
