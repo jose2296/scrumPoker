@@ -1,6 +1,10 @@
 import { Vue } from 'vue-property-decorator';
+import card from '../../components/Card/Card.vue';
 
 export default Vue.extend({
+    components: {
+        card
+    },
     data: (): { userName: string; socket: any } => ({
         userName: '',
         socket: null
@@ -24,10 +28,10 @@ export default Vue.extend({
                 } else {
                     self.socket.emit('new-user', this.userName);
                     self.socket.on('me', (user: any) => {
-                        this.$store.commit('setWsUserId', user.id);
+                        this.$store.commit('setWsUser', user);
                     });
                 }
-                this.$store.commit('setWsUser', this.userName);
+                // this.$store.commit('setWsUser', this.userName);
                 this.$store.commit('nextStep', 2);
                 this.$router.push({ name: 'Step2' });
             }

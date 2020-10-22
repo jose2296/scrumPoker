@@ -6,11 +6,11 @@
 
         <h4>List of rooms</h4>
         <hr style="width: 100%">
-        <div class="room" v-for="(room, index) in $store.state.rooms" v-bind:key="index">
+        <div class="room" v-for="(room, key) in $store.state.rooms" v-bind:key="key">
             <div class="name">
-                {{ room.name }} ({{ room.users.length }})
+                {{ room.name }} ({{ getUsersInRoom(room.users) }}) ➡ [{{ room.status }}]
             </div>
-            <button @click="joinRoom(room.name)">Join</button>
+            <button @click="joinRoom(room.id)">Join</button>
         </div>
     </div>
 </template>
