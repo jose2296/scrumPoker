@@ -1,5 +1,5 @@
 <template>
-  <div class="card" v-bind:class="{ 'flip': flipped, 'disabled': disabled, [data.type]: true }" @click="cardClick()">
+  <div class="card" v-bind:class="{ 'flip': state.flipped, 'disabled': disabled, [data.type]: true }" @click="cardClick()">
     <div class="inner">
       <div class="front">
         <div class="text">{{ data.label }}</div>
@@ -68,40 +68,40 @@
 }
 
 .card.type-1 .inner .back {
-  background-image: url('../../assets/images/cactus.png');
+  background-image: url('../../assets/cactus.png');
 
 }
 .card.type-2 .inner .back {
-  background-image: url('../../assets/images/bolos.png');
+  background-image: url('../../assets/bolos.png');
 }
 
 .card.type-3 .inner .back {
-  background-image: url('../../assets/images/halloween.png');
+  background-image: url('../../assets/halloween.png');
   background-size: 105% 105%;
   background-position: -3px -5px;
 }
 .card.type-4 .inner .back {
-  background-image: url('../../assets/images/planet.jpeg');
+  background-image: url('../../assets/planet.jpeg');
   background-size: 105% 105%;
   background-position: -3px -5px;
 }
 .card.type-5 .inner .back {
-  background-image: url('../../assets/images/planet1.jpeg');
+  background-image: url('../../assets/planet1.jpeg');
   background-size: 105% 105%;
   background-position: -3px -5px;
 }
 .card.type-6 .inner .back {
-  background-image: url('../../assets/images/design-1.jpeg');
+  background-image: url('../../assets/design-1.jpeg');
   background-size: 105% 105%;
   background-position: -3px -5px;
 }
 .card.type-7 .inner .back {
-  background-image: url('../../assets/images/design-2.jpeg');
+  background-image: url('../../assets/design-2.jpeg');
   background-size: 105% 105%;
   background-position: -3px -5px;
 }
 .card.type-8 .inner .back {
-  background-image: url('../../assets/images/design-3.jpeg');
+  background-image: url('../../assets/design-3.jpeg');
   background-size: 105% 105%;
   background-position: -3px -5px;
 }
