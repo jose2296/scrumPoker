@@ -27,6 +27,14 @@ export default Vue.extend({
     created: function() {
         this.socket = io(process.env.VUE_APP_api_url);
 
-        this.$store.commit('setSocket', this.socket)
+        this.$store.commit('setSocket', this.socket);
+
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                this.$store.commit('setUser', user.providerData);
+            }
+            this.$store.commit('setUser', null);
+        });
     }
 })

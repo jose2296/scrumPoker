@@ -80,6 +80,31 @@
   background-size: 105% 105%;
   background-position: -3px -5px;
 }
+.card.type-4 .inner .back {
+  background-image: url('../../assets/images/planet.jpeg');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+.card.type-5 .inner .back {
+  background-image: url('../../assets/images/planet1.jpeg');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+.card.type-6 .inner .back {
+  background-image: url('../../assets/images/design-1.jpeg');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+.card.type-7 .inner .back {
+  background-image: url('../../assets/images/design-2.jpeg');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+.card.type-8 .inner .back {
+  background-image: url('../../assets/images/design-3.jpeg');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
 
 .card .inner .back .image {
   transform: rotate(-60deg);

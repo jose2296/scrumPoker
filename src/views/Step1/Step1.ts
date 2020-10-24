@@ -1,19 +1,43 @@
 import { Vue } from 'vue-property-decorator';
 import card from '../../components/Card/Card.vue';
+import * as firebase from "firebase/app";
 
 export default Vue.extend({
     components: {
         card
     },
-    data: (): { userName: string; socket: any } => ({
+    data: (): { userName: string; socket: any; email: string; password: string; showLogin: boolean } => ({
         userName: '',
-        socket: null
+        socket: null,
+        email: '',
+        password: '',
+        showLogin: true
     }),
     created: function() {
         this.userName = this.$store.state.userName;
         this.socket = this.$store.state.socket;
+
+        if (this.$store.state.user) {
+
+        }
     },
     methods: {
+        logout: function() {
+            firebase.auth().signOut();
+        },
+        register: function(e: Event) {
+            e.preventDefault();
+            firebase.auth().createUserWithEmailAndPassword(this.email, this.password).catch(function(error) {
+                console.error(error);
+            });
+        },
+        login: function(e: Event) {
+            e.preventDefault();
+            firebase.auth().signInWithEmailAndPassword(this.email, this.password).catch(function(error) {
+                console.error(error);
+
+              });
+        },
         setUserName: function() {
             this.$store.commit('setUserName', this.userName);
             if (!this.userName) {

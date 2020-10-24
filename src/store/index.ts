@@ -14,7 +14,9 @@ export default new Vuex.Store({
             id: null,
             userName: '',
             room: null
-        }
+        },
+        // NEW USER FIREBASE AUTH
+        user: null
     },
     mutations: {
         setUserName: (state, userName) => {
@@ -38,6 +40,10 @@ export default new Vuex.Store({
         },
         setWsUser: (state, user) => {
             state.wsUser = user;
+        },
+        // NEW USER FIREBASE AUTH
+        setUser: (state, userData) => {
+            state.user = userData;
         }
     },
     actions: {
