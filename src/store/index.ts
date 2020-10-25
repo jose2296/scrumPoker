@@ -1,25 +1,35 @@
 import { createStore } from 'vuex'
+import io from 'socket.io-client';
 
 export interface State {
-  name: string;
-  cards: any[];
+    socket: SocketIOClient.Socket | null;
+    cards: any[];
+    user: any;
+    loading: boolean;
 }
 const state: State = {
-  name: 'Test Vuex',
-  cards: []
+    socket: null,
+    cards: [],
+    user: null,
+    loading: true
 }
+
 export default createStore({
-  state,
-  mutations: {
-    changeName: (state, name) => {
-      state.name = name;
+    state,
+    mutations: {
+        setSocket: (state: State, socket) => {
+            state.socket = socket;
+        },
+        setCards: (state: State, cards: any[]) => {
+            state.cards = cards;
+        },
+        setUser: (state: State, user: any) => {
+            state.user = user;
+            state.loading = false;
+        }
     },
-    setCards: (state, cards) => {
-      state.cards = cards;
+    actions: {
+    },
+    modules: {
     }
-  },
-  actions: {
-  },
-  modules: {
-  }
 })
