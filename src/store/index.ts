@@ -1,53 +1,35 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { createStore } from 'vuex'
+import io from 'socket.io-client';
 
-Vue.use(Vuex);
+export interface State {
+    socket: SocketIOClient.Socket | null;
+    cards: any[];
+    user: any;
+    loading: boolean;
+}
+const state: State = {
+    socket: null,
+    cards: [],
+    user: null,
+    loading: true
+}
 
-export default new Vuex.Store({
-    state: {
-        currentStep: 1,
-        userName: '',
-        rooms: [],
-        currentRoom: '',
-        socket: null,
-        wsUser: {
-            id: null,
-            userName: '',
-            room: null
-        },
-        // NEW USER FIREBASE AUTH
-        user: null
-    },
+export default createStore({
+    state,
     mutations: {
-        setUserName: (state, userName) => {
-            state.userName = userName;
-        },
-        setRooms: (state, rooms) => {
-            state.rooms = rooms;
-        },
-        nextStep: (state, step) => {
-            state.currentStep = step;
-        },
-        setCurrentRoom: (state, room) => {
-            state.currentRoom = room;
-            state.wsUser = {
-                ...state.wsUser,
-                room
-            }
-        },
-        setSocket: (state, socket) => {
+        setSocket: (state: State, socket) => {
             state.socket = socket;
         },
-        setWsUser: (state, user) => {
-            state.wsUser = user;
+        setCards: (state: State, cards: any[]) => {
+            state.cards = cards;
         },
-        // NEW USER FIREBASE AUTH
-        setUser: (state, userData) => {
-            state.user = userData;
+        setUser: (state: State, user: any) => {
+            state.user = user;
+            state.loading = false;
         }
     },
     actions: {
     },
     modules: {
-    },
-});
+    }
+})

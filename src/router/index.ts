@@ -1,55 +1,68 @@
-import Vue from 'vue';
-import VueRouter, { RouteConfig } from 'vue-router';
-import Home from '../views/Home.vue';
-import Step1 from '../views/Step1/Step1.vue';
-import Step2 from '../views/Step2/Step2.vue';
-import Step3 from '../views/Step3/Step3.vue';
+import store from '@/store';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
-Vue.use(VueRouter);
-
-const routes: Array<RouteConfig> = [
-
+const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        redirect: '/step1'
+        name: 'Auth',
+        component: () => import(/* webpackChunkName: "login" */ '../views/Auth/Auth.vue'),
+        children: [
+            {
+                path: '/',
+                name: 'Login',
+                component: () => import(/* webpackChunkName: "login" */ '../views/Auth/Login/Login.vue')
+            },
+            {
+                path: '/register',
+                name: 'Register',
+                component: () => import(/* webpackChunkName: "register" */ '../views/Auth/Register/Register.vue')
+            }
+        ]
     },
     {
-        path: '/step1',
-        name: 'Step1',
-        component: Step1,
-    },
-    {
-        path: '/step2',
-        name: 'Step2',
-        component: Step2
-    },
-    {
-        path: '/step3',
-        name: 'Step3',
-        component: Step3
-    },
-    // {
-    //     path: '/home/',
-    //     name: 'Home',
-    //     component: Home,
-    // },
-    // {
-    //     path: '/home/:roomId',
-    //     name: 'Home',
-    //     component: Home,
-    // },
-    // {
-    //     path: '/about',
-    //     name: 'About',
-    //     // route level code-splitting
-    //     // this generates a separate chunk (about.[hash].js) for this route
-    //     // which is lazy-loaded when the route is visited.
-    //     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
-    // },
-];
+        path: '/app',
+        name: 'App',
+        component: () => import(/* webpackChunkName: "App" */ '../views/App/App.vue'),
+        children: [
+            {
+                path: 'rooms',
+                name: 'Rooms',
+                component: () => import(/* webpackChunkName: "rooms" */ '../views/App/Rooms/Rooms.vue'),
+            },
+            {
+                path: ':roomId',
+                name: 'roomId',
+                component: () => import(/* webpackChunkName: "rooms" */ '../views/App/Room/Room.vue'),
+            }
+        ]
+    }
+]
 
-const router = new VueRouter({
-    routes,
+const router = createRouter({
+    history: createWebHistory(process.env.BASE_URL),
+    routes
+})
+
+router.beforeEach((to, from, next) => {
+    if (store.state.loading) return
+
+    // NO LOGGED ROUTES
+    if (store.state.user) {
+        if (to.name === 'Register' || to.name === 'Login') {
+            next({ name: 'App' });
+            return;
+        }
+        next();
+        return;
+    }
+
+    // NO LOGGED ROUTES
+    if (to.name === 'App') {
+        next({ name: 'Login' });
+        return;
+    }
+
+    next();
 });
 
-export default router;
+export default router
