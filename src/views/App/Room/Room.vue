@@ -90,6 +90,7 @@
             </div>
 
             <button v-if="state.room.adminUser === state.wsUser.uid" @click="handleNewVote()">Start new vote</button>
+            <button v-if="state.room.adminUser === state.wsUser.uid" @click="handleClearVote()">Clear vote</button>
         </div>
 
         <div v-if="state.room.status === 'ready-to-vote' && state.room.adminUser === state.wsUser.uid" class="wait-user">
@@ -145,6 +146,10 @@ export default defineComponent({
                 state.room = roomInfo;
             });
 
+            socket.on('voting-cleared', (roomInfo: any) => {
+                state.room = roomInfo;
+            });
+
             socket.on('votes', function(data: any) {
                 state.room = data;
             });
@@ -168,11 +173,17 @@ export default defineComponent({
                 socket.emit('start-voting', roomId);
             };
 
+            const handleClearVote = () => {
+                state.waitingUsers = false;
+                socket.emit('clear-voting', roomId);
+            };
+
             return {
                 state,
                 handleVoteButton,
                 vote,
-                handleNewVote
+                handleNewVote,
+                handleClearVote
             }
         }
 
