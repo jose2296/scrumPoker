@@ -8,7 +8,31 @@
 
 <script src="./MainApp.ts"></script>
 
-<style lang="sass" scoped>
+<style lang="sass">
+body
+    box-sizing: border-box
+    margin: 0
+    padding: 0
+    background-color: #282a36
+*
+    box-sizing: border-box
+    margin: 0
+    padding: 0
+    color: #f8f8f2
+    font-family: 'Rubik', sans-serif
+
+button
+    color: #f8f8f2
+    background-color: #6272a4
+    border: 0
+    outline: none
+    padding: 10px 30px
+    cursor: pointer
+    border-radius: 8    px
+    transition: 0.5s
+    &:hover
+        opacity: 0.6
+
 .loading
     left: 0
     top: 0
@@ -20,4 +44,6 @@
     justify-content: center
     align-items: center
     font-size: 50px
+
+
 </style>

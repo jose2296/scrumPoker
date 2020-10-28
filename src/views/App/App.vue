@@ -1,9 +1,17 @@
 <template>
     <div class="layout">
-        <div class="nav">
-            <router-link to="/app/rooms">Rooms</router-link> |
-            <button @click="logout">Logout</button>
-        </div>
+        <header class="header">
+            <div class="logo">ScrumPoker</div>
+
+            <div class="nav">
+                <router-link to="/app/rooms">Rooms</router-link> |
+                <button @click="logout">Logout</button>
+            </div>
+
+            <div class="avatar">
+                Avatar
+            </div>
+        </header>
         <div class="app">
             <router-view />
         </div>
@@ -55,5 +63,13 @@ export default defineComponent({
 </script>
 
 <style lang="sass">
+.layout
+    .header
+        display: flex
+        justify-content: space-between
+        align-items: center
+        height: 60px
+        background-color: #191A21
+        padding: 0 20px
 
 </style>

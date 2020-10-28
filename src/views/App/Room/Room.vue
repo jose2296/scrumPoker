@@ -1,6 +1,38 @@
 <template>
-    <div class="step3" v-if="!!state.room">
+    <div class="room-container" v-if="!!state.room">
+        <div class="room-name">
+            <span>
+                {{ state.room.name }}
+            </span>
+        </div>
 
+        <div class="main">
+            <div class="user-votes">
+                <h3>Vote results: </h3>
+                <div class="votes">
+                    <div class="vote" v-for="(user, index) in state.room.users" v-bind:key="index">
+                        <template v-if="state.room.userVotes && state.room.userVotes[user.id]">
+                            <div class="user-name">{{ user.name }}</div>
+                            <card :data="{ label: state.room.userVotes[user.id], points: state.room.userVotes[user.id], type: 'type-2' }" />
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <div class="user-list">
+                <h3>Users list: </h3>
+                <div class="user" v-for="(user, index) in state.room.users" v-bind:key="index">
+                    <div class="mini-card"></div>
+                    <div class="user-name">{{ user.name }}</div>
+                    <div class="vote-status" v-if="state.room.status === 'voting'">
+                        {{ !(state.room.userVotes && state.room.userVotes[user.id]) ?
+                            'Voting...' : 'Voted'
+                        }}
+                    </div>
+                    <div class="vote-status" v-if="state.room.status === 'voted'">Voted</div>
+                </div>
+            </div>
+        </div>
         <hr>
         <h3>ME: {{ state.wsUser.uid }} | {{ state.wsUser.displayName }}</h3>
         <hr>
@@ -155,25 +187,4 @@ export default defineComponent({
 })
 </script>
 
-<style lang="sass">
-.room
-    max-width: 500px
-    display: flex
-    flex-direction: column
-    align-items: center
-    margin: auto
-    .room
-        display: flex
-        width: 100%
-        justify-content: space-between
-        padding-bottom: 15px
-        .name
-            padding-right: 30px
-        button
-            padding: 5px 30px
-.voting-container
-    display: flex
-    flex-wrap: wrap
-    justify-content: center
-    margin: 50px 0 100px 0
-</style>
+<style src="./Room.sass" lang="sass"></style>

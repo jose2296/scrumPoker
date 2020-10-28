@@ -89,7 +89,4 @@ export default defineComponent({
         padding-bottom: 15px
         .name
             padding-right: 30px
-        button
-            padding: 5px 30px
-
 </style>

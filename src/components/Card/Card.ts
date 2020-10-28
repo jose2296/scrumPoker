@@ -1,7 +1,7 @@
 import { defineComponent, reactive, ref } from 'vue';
 
 export default defineComponent({
-    name: 'Card',
+    name: 'card',
     props: [
         'data',
         'disabled'

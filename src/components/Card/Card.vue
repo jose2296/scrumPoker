@@ -27,7 +27,6 @@
   position: relative;
   cursor: pointer;
   display: flex;
-  margin: 20px;
   perspective: 1000px;
 }
 .card.disabled {
