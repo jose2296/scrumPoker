@@ -62,7 +62,7 @@
                 justify-content: center
                 flex-grow: 1
         .user-list
-            width: 350px
+            width: auto
             border-left: 2px solid var(--color3)
             display: flex
             flex-direction: column
@@ -119,3 +119,9 @@
         max-height: 150px
         min-width: 100px
         min-height: 150px
+
+@media screen and (min-width: 768px)
+    .room-container
+        .main
+            .user-list
+                width: 350px

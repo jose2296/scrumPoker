@@ -77,7 +77,7 @@ export default defineComponent({
 
 <style lang="sass">
 .rooms
-    max-width: 500px
+    width: 500px
     display: flex
     flex-direction: column
     align-items: center
