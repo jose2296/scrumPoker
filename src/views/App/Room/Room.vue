@@ -4,106 +4,84 @@
             <span>
                 {{ state.room.name }}
             </span>
+            <span class="status">[{{ state.room.status }}]</span>
         </div>
 
         <div class="main">
             <div class="user-votes">
                 <h3>Vote results: </h3>
                 <div class="votes">
-                    <div class="vote" v-for="(user, index) in state.room.users" v-bind:key="index">
-                        <template v-if="state.room.userVotes && state.room.userVotes[user.id]">
+                    <template v-for="(user, index) in state.room.users" v-bind:key="index">
+                        <div class="vote" v-if="state.room.userVotes && state.room.userVotes[user.id]">
                             <div class="user-name">{{ user.name }}</div>
-                            <card :data="{ label: state.room.userVotes[user.id], points: state.room.userVotes[user.id], type: 'type-2' }" />
-                        </template>
-                    </div>
+                            <div class="card-wrapper">
+                                <card
+                                    :data="{ label: state.room.userVotes[user.id], points: state.room.userVotes[user.id], type: 'type-2' }"
+                                    :disabled="true"
+                                    :flipped="cardsFlipped"
+                                />
+                            </div>
+                        </div>
+                    </template>
+
+                </div>
+                <div v-if="!state.room.userVotes" class="no-votes">
+                    <template  v-if="state.room.status === 'ready-to-vote'">
+                        Waiting for admin to start vote.
+                    </template>
+                    <template  v-if="state.room.status === 'voting'">
+                        No votes yet.
+                    </template>
                 </div>
             </div>
 
             <div class="user-list">
-                <h3>Users list: </h3>
-                <div class="user" v-for="(user, index) in state.room.users" v-bind:key="index">
-                    <div class="mini-card"></div>
-                    <div class="user-name">{{ user.name }}</div>
-                    <div class="vote-status" v-if="state.room.status === 'voting'">
-                        {{ !(state.room.userVotes && state.room.userVotes[user.id]) ?
-                            'Voting...' : 'Voted'
-                        }}
+                <div class="users">
+                    <h3>Users list: </h3>
+                    <div class="user" v-for="(user, index) in state.room.users" v-bind:key="index">
+                        <!-- TODO: Add card type from user -->
+                        <div class="mini-card"></div>
+                        <div class="user-name">{{ user.name }}</div>
+                        <div v-if="user.id === state.room.adminUser" class="is-admin">
+                            <img :src="require('@/assets/crown.svg')" alt="admin">
+                        </div>
+                        <div class="vote-status" v-if="state.room.status === 'voting'">
+                            {{ !(state.room.userVotes && state.room.userVotes[user.id]) ?
+                                'Voting...' : 'Voted'
+                            }}
+                        </div>
+                        <div class="vote-status" v-if="state.room.status === 'voted'">Voted</div>
                     </div>
-                    <div class="vote-status" v-if="state.room.status === 'voted'">Voted</div>
+                </div>
+
+                <div v-if="state.wsUser.uid === state.room.adminUser" class="admin-options">
+
+                    <template  v-if="state.room.status === 'ready-to-vote'">
+                        <button @click="handleVoteButton(true)">Start voting</button>
+                    </template>
+
+                    <template  v-if="state.room.status === 'voting'" >
+                        <button @click="handleVoteButton(false)">Finish vote</button>
+                    </template>
+
+                    <template  v-if="state.room.status === 'voted'" >
+                        <button v-if="state.room.adminUser === state.wsUser.uid" @click="handleNewVote()">Start new vote</button>
+                        <button v-if="state.room.adminUser === state.wsUser.uid" @click="handleClearVote()">Clear vote</button>
+                    </template>
                 </div>
             </div>
         </div>
-        <hr>
-        <h3>ME: {{ state.wsUser.uid }} | {{ state.wsUser.displayName }}</h3>
-        <hr>
-        <h1>Status: {{ state.room.status }}</h1>
 
-
-        <h1>Room: {{ state.room.name }}</h1>
-        <!-- <p>Admin: {{ state.room.adminUser}} | {{ state.room.users[state.room.adminUser].name }}</p> -->
-        <h4>Users:</h4>
-        <div
-            class="user"
-            v-for="(user, index) in state.room.users"
-            v-bind:key="index"
-        >
-            {{ user.name }} {{ user.id === state.room.adminUser ? '(Admin)' : '' }}
-        </div>
-
-
-        <!-- VOTING -->
-        <div v-if="state.room.status === 'voting'" class="wait-user">
-            <div class="voting-container">
-                <card v-for="(card, index) in state.cards" :data="card" :disabled="!!state.waitingUsers" v-bind:key="index" @card-click="vote" />
-            </div>
-
-            <div v-if="state.waitingUsers" class="wait-user">
-                <p>Waiting other users to finish votation...</p>
-            </div>
-
-            <div
-                class="user"
-                v-for="(user, index) in state.room.users"
-                v-bind:key="index"
-            >
-                {{ user.name }} {{ user.id === state.room.adminUser ? '(Admin)' : '' }} -> {{
-                    state.room.userVotes ? (state.room.userVotes[user.id] ? 'Voted' : 'Pending to vote') : 'Pending to vote'
-                }}
-            </div>
-
-            <div v-if="state.room.adminUser === state.wsUser.uid" class="admin-options">
-                <button @click="handleVoteButton(false)">Finish votation</button>
-            </div>
-        </div>
-
-        <!-- VOTED -->
-        <div v-if="state.room.status === 'voted'" class="wait-user">
-            <h3>Vote results: </h3>
-            <div
-                class="user"
-                v-for="(user, index) in state.room.users"
-                v-bind:key="index"
-            >
-                {{ user.name }} {{ user.id === state.room.adminUser ? '(Admin)' : '' }} {{
-                    state.room.userVotes[user.id] ? '-> ' + state.room.userVotes[user.id] : ''
-                }}
-            </div>
-
-            <button v-if="state.room.adminUser === state.wsUser.uid" @click="handleNewVote()">Start new vote</button>
-            <button v-if="state.room.adminUser === state.wsUser.uid" @click="handleClearVote()">Clear vote</button>
-        </div>
-
-        <div v-if="state.room.status === 'ready-to-vote' && state.room.adminUser === state.wsUser.uid" class="wait-user">
-
-            <div class="admin-options">
-                <button @click="handleVoteButton(true)">Start voting</button>
+        <div class="user-cards" v-bind:class="{ 'disabled': state.room.status === 'ready-to-vote' || state.room.status === 'voted' }">
+            <div class="card-wrapper" v-for="(card, index) in state.cards" v-bind:key="index">
+                <card :data="card" :disabled="!!state.waitingUsers" @card-click="vote" />
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive, ref } from 'vue';
 import firebase, { User } from 'firebase/app';
 import { useStore } from 'vuex';
 import { State } from '@/store';
@@ -123,8 +101,9 @@ export default defineComponent({
             room: null,
             wsUser: store.state.user,
             waitingUsers: false,
-            cards: store.state.cards
+            cards: store.state.cards,
         });
+        const cardsFlipped = ref(true);
         const socket = store.state.socket;
         const roomId = router.currentRoute.value.params.roomId;
 
@@ -139,15 +118,18 @@ export default defineComponent({
 
             socket.on('voting-started', (roomInfo: any) => {
                 state.room = roomInfo;
+                cardsFlipped.value = true;
                 state.waitingUsers = false;
             });
 
             socket.on('voting-ended', (roomInfo: any) => {
+                cardsFlipped.value = false;
                 state.room = roomInfo;
             });
 
             socket.on('voting-cleared', (roomInfo: any) => {
                 state.room = roomInfo;
+                cardsFlipped.value = false;
             });
 
             socket.on('votes', function(data: any) {
@@ -180,6 +162,7 @@ export default defineComponent({
 
             return {
                 state,
+                cardsFlipped,
                 handleVoteButton,
                 vote,
                 handleNewVote,
@@ -192,7 +175,8 @@ export default defineComponent({
         router.push({ name: 'Rooms'});
 
         return {
-            state
+            state,
+            cardsFlipped
         }
     }
 })

@@ -3,14 +3,16 @@
         <header class="header">
             <div class="logo">ScrumPoker</div>
 
-            <div class="nav">
-                <router-link to="/app/rooms">Rooms</router-link> |
-                <button @click="logout">Logout</button>
-            </div>
-
-            <div class="avatar">
-                Avatar
-            </div>
+            <dropdown :options="state.options" @option-clicked="dropdownOptionClicked">
+                <div class="avatar-container">
+                    <div class="name">
+                        {{ state.userName }}
+                    </div>
+                    <div class="avatar">
+                        <img :src="require('@/assets/avatar.jpg')" alt="avatar">
+                    </div>
+                </div>
+            </dropdown>
         </header>
         <div class="app">
             <router-view />
@@ -19,21 +21,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
+import { computed, defineComponent, reactive } from 'vue';
 import firebase from 'firebase/app';
 import { useStore } from 'vuex';
 import { State } from '@/store';
 import io from 'socket.io-client';
+import Dropdown from "@/components/Dropdown/Dropdown.vue";
 
 export default defineComponent({
     name: 'App',
+    components: {
+        Dropdown
+    },
     setup() {
-        const state = reactive({
-        });
         const store = useStore<State>();
+        const state = reactive({
+            userName: store.state.user.displayName,
+            options: ['Profile', 'Logout'] // TODO: Add enums for this options
+        });
 
-        const logout = (e: Event) => {
-            e.preventDefault();
+        const logout = () => {
             firebase.auth().signOut()
                 .then(response => {
                     console.log(response);
@@ -53,10 +60,16 @@ export default defineComponent({
         });
 
         store.commit('setSocket', socket);
+        const dropdownOptionClicked = (optionSelected: string) => {
+            console.log(optionSelected);
 
+            if (optionSelected === 'Logout') {
+                logout();
+            }
+        };
         return {
             state,
-            logout
+            dropdownOptionClicked
         }
     }
 })
@@ -64,6 +77,10 @@ export default defineComponent({
 
 <style lang="sass">
 .layout
+    display: flex
+    flex-direction: column
+    width: 100vw
+    height: 100vh
     .header
         display: flex
         justify-content: space-between
@@ -71,5 +88,20 @@ export default defineComponent({
         height: 60px
         background-color: #191A21
         padding: 0 20px
-
+        .avatar-container
+            display: flex
+            align-items: center
+            cursor: pointer
+            .name
+                padding-right: 20px
+            .avatar
+                border-radius: 50%
+                width: 40px
+                height: 40px
+                overflow: hidden
+                img
+                    width: 100%
+    .app
+        flex-grow: 1
+        display: flex
 </style>

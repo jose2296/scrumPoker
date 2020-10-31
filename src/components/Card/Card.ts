@@ -1,23 +1,24 @@
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, reactive, ref, watch } from 'vue';
 
 export default defineComponent({
     name: 'card',
     props: [
         'data',
-        'disabled'
+        'disabled',
+        'flipped'
     ],
     setup(props, { emit }) {
-        const flipped = ref(true);
         const state = reactive({
-            flipped,
+            flipped: props.flipped,
             disabled: props.disabled,
             data: props.data
-        })
+        });
 
         const cardClick = () => {
             state.flipped = !state.flipped;
             emit('card-click', props.data);
-        }
+        };
+
         return {
             state,
             cardClick

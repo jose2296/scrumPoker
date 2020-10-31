@@ -1,6 +1,7 @@
 .room
     max-width: 500px
     display: flex
+    flex-direction: row
     flex-direction: column
     align-items: center
     margin: auto
@@ -22,27 +23,28 @@
 
 
 .room-container
+    height: calc(100vh - 60px)
+    display: flex
+    flex-direction: column
+    .room-name
+        text-align: center
+        padding: 15px 0 20px 0
+        span
+            font-size: 22px
+            font-weight: 600
+            position: relative
+        .status
+            padding-left: 10px
+            color: var(--color6)
     .main
         display: flex
-        .room-name
-            text-align: center
-            padding: 15px 0 20px 0
-            span
-                font-size: 22px
-                font-weight: 600
-                position: relative
-                &:after
-                    content: ''
-                    position: absolute
-                    bottom: -8px
-                    left: 50%
-                    transform: translateX(-50%)
-                    width: 120%
-                    height: 3px
-                    background-color: #f8f8f2
-                    border-radius: 20px
+        flex: 1
+        border-top: 2px solid var(--color3)
         .user-votes
             flex: 1
+            display: flex
+            flex-direction: column
+            padding: 20px
             .votes
                 display: flex
                 flex-direction: row
@@ -55,12 +57,66 @@
                     padding: 20px
                     .user-name
                         padding-bottom: 15px
-        .user-list
-            width: 300px
-            h3
-                padding-bottom: 10px
-            .user
+            .no-votes
                 display: flex
-                padding-bottom: 10px
-                .vote-status
-                    padding-left: 20px
+                align-items: center
+                justify-content: center
+                flex-grow: 1
+        .user-list
+            width: 350px
+            border-left: 2px solid var(--color3)
+            display: flex
+            flex-direction: column
+            .users
+                padding: 20px
+                flex: 1
+                h3
+                    padding-bottom: 10px
+                .user
+                    display: flex
+                    padding-bottom: 10px
+                    align-items: center
+                    .mini-card
+                        width: 25px
+                        height: 35px
+                        background-color: var(--color8)
+                    .user-name
+                        padding-left: 15px
+                    .is-admin
+                        display: flex
+                        margin-left: 10px
+                        align-items: center
+                        width: 15px
+                    .vote-status
+                        padding-left: 20px
+            .admin-options
+                border-top: 2px solid var(--color3)
+                padding: 20px 0
+                display: flex
+                align-items: center
+                justify-content: center
+                button
+                    &:not(:first-child)
+                        margin-left: 20px
+    .user-cards
+        height: 220px
+        padding-top: 15px
+        border-top: 2px solid var(--color3)
+        display: flex
+        flex-wrap: wrap
+        justify-content: center
+        overflow: auto
+        &.disabled
+            > *
+                cursor: not-allowed
+                *
+                    pointer-events: none
+
+
+    .card-wrapper
+        flex: 1
+        margin: 20px
+        max-width: 100px
+        max-height: 150px
+        min-width: 100px
+        min-height: 150px
