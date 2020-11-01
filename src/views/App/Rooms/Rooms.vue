@@ -77,19 +77,20 @@ export default defineComponent({
 
 <style lang="sass">
 .rooms
-    max-width: 500px
+    width: 500px
     display: flex
     flex-direction: column
     align-items: center
     margin: auto
+    h4
+        padding-bottom: 5px
     .room
         display: flex
         width: 100%
         justify-content: space-between
         padding-bottom: 15px
+        &::first-child
+            padding-top: 10px
         .name
             padding-right: 30px
-        button
-            padding: 5px 30px
-
 </style>

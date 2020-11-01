@@ -1,5 +1,5 @@
 <template>
-  <div class="card" v-bind:class="{ 'flip': state.flipped, 'disabled': disabled, [data.type]: true }" @click="cardClick()">
+  <div class="card" v-bind:class="{ 'flip': flipped, 'disabled': disabled, [data.type]: true }" @click="cardClick()">
     <div class="inner">
       <div class="front">
         <div class="text">{{ data.label }}</div>
@@ -20,14 +20,13 @@
     #00ced1
   );
   --back-card-background-color: #242c62;
-  --card-width: 100px;
-  --card-height: 150px;
+  --card-width: 100%;
+  --card-height: 100%;
   width: var(--card-width);
   height: var(--card-height);
   position: relative;
   cursor: pointer;
   display: flex;
-  margin: 20px;
   perspective: 1000px;
 }
 .card.disabled {
@@ -61,9 +60,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color3);
   font-size: 25px;
-  background-color: #ffffff;
+  background-color: var(--color3);
   background-size: 100% 100%;
 }
 
@@ -111,7 +110,7 @@
   width: 125px;
 }
 .card .inner .front {
-  background-color: white;
+  background-color: var(--color3);;
   display: flex;
 }
 .card .inner .front::before {
@@ -133,7 +132,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: var(--color3);;
   font-size: 30px;
   position: relative;
   user-select: none;
@@ -157,7 +156,7 @@
   padding: 10px 30px;
   border: 0;
   background: #222222;
-  color: #ffffff;
+  color: var(--color3);;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: 0.5s;
@@ -166,7 +165,7 @@
   overflow: hidden;
 }
 .container .buttons-container button span {
-  color: #ffffff;
+  color: var(--color3);;
   transition: 0.2s;
   transition-delay: 0.2s;
   font-weight: 800;
