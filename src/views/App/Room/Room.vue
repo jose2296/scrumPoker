@@ -9,7 +9,7 @@
 
         <div class="main">
             <div class="user-votes">
-                <h3>Vote results: </h3>
+                <h3>Votes: </h3>
                 <div class="votes">
                     <template v-for="(user, index) in state.room.users" v-bind:key="index">
                         <div class="vote" v-if="state.room.userVotes && state.room.userVotes[user.id]">
@@ -37,7 +37,7 @@
             </div>
 
             <div class="user-list">
-                <div class="users">
+                <div class="users" v-if="state.room.status !== 'voted'">
                     <h3>Users list: </h3>
                     <div class="user" v-for="(user, index) in state.room.users" v-bind:key="index">
                         <!-- TODO: Add card type from user -->
@@ -54,6 +54,25 @@
                             }}
                         </div>
                         <div class="vote-status" v-if="state.room.status === 'voted'">Voted</div>
+                    </div>
+                </div>
+
+                <div class="vote-results" v-if="state.room.status === 'voted'">
+                    <h3>Vote results: </h3>
+                    <div class="result">
+                        <div class="card-container">
+                            <div v-if="state.activeResultType === 'average'" class="card-wrapper">
+                                <card :data="{ label: state.roomResults.average }" :disabled="true" :flipped="false"/>
+                            </div>
+                            <div v-if="state.activeResultType === 'greatest'" class="card-wrapper">
+                                <card :data="{ label: state.roomResults.greatest }" :disabled="true" :flipped="false"/>
+                            </div>
+                        </div>
+                        <div class="selection">
+                            <div class="item" v-bind:class="{ active: state.activeResultType === 'greatest' }" @click="activeResultType('greatest')">Greatest</div>
+                            <div class="divider"></div>
+                            <div class="item" v-bind:class="{ active: state.activeResultType === 'average' }" @click="activeResultType('average')">Average</div>
+                        </div>
                     </div>
                 </div>
 
@@ -100,12 +119,18 @@ export default defineComponent({
     setup() {
         const store = useStore<State>();
         const router = useRouter();
+        // TODO: Add types
         const state = reactive({
             room: null,
             wsUser: store.state.user,
             waitingUsers: false,
             cards: store.state.cards,
-            deckSelection: 'type-1'
+            deckSelection: 'type-1',
+            roomResults: {
+                average: 0,
+                greatest: 0
+            },
+            activeResultType: 'greatest'
         });
         const cardsFlipped = ref(true);
         const socket = store.state.socket;
@@ -127,6 +152,20 @@ export default defineComponent({
 
             socket.on('voting-ended', (roomInfo: any) => {
                 cardsFlipped.value = false;
+                const room: { userVotes: { [key: string]: number } } = state.room as any || {};
+                const allVotes = Object.values(room.userVotes);
+                const votesAcumulator = allVotes.reduce((accumulator, value) => {
+                    return accumulator + value;
+                }, 0);
+
+
+                const average = votesAcumulator / Object.keys(room.userVotes).length;
+                const greatest = Math.max(...allVotes);
+
+                state.roomResults = {
+                    average,
+                    greatest
+                };
                 state.room = roomInfo;
             });
 
@@ -169,6 +208,10 @@ export default defineComponent({
                 socket.emit('clear-voting', roomId);
             };
 
+            const activeResultType = (type: string) => {
+                state.activeResultType = type;
+            };
+
             onUnmounted(() => {
                 socket.emit('leave-room', { roomId });
                 // firebase.database().ref(`users/${state.wsUser.uid}/deckSelection`).off();
@@ -180,7 +223,8 @@ export default defineComponent({
                 handleVoteButton,
                 vote,
                 handleNewVote,
-                handleClearVote
+                handleClearVote,
+                activeResultType
             }
         }
 

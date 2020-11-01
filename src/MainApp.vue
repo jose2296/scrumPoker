@@ -66,4 +66,38 @@ input
     font-size: 50px
 
 
+::-webkit-scrollbar
+  width: 5px
+  height: 5px
+
+::-webkit-scrollbar-button
+  width: 0px
+  height: 0px
+
+::-webkit-scrollbar-thumb
+  background: #f8f8f2
+  border: 0px none #000000
+  border-radius: 50px
+
+::-webkit-scrollbar-thumb:hover
+  background: #bd93f9
+
+::-webkit-scrollbar-thumb:active
+  background: #bd93f9
+
+::-webkit-scrollbar-track
+  background: #666666
+  border: 0px none #000000
+  border-radius: 100px
+
+::-webkit-scrollbar-track:hover
+  background: #666666
+
+::-webkit-scrollbar-track:active
+  background: #666666
+
+::-webkit-scrollbar-corner
+  background: transparent
+
+
 </style>

@@ -67,6 +67,46 @@
             border-left: 2px solid var(--color3)
             display: flex
             flex-direction: column
+            .vote-results
+                flex: 1
+                padding: 20px
+                display: flex
+                flex-direction: column
+                // flex-direction: column
+                // justify-content: center
+                // align-items: center
+                .result
+                    display: flex
+                    flex-direction: column
+                    justify-content: center
+                    align-items: center
+                    flex-grow: 1
+                    .card-container
+                        padding-bottom: 20px
+                        display: flex
+                        .card-wrapper
+                            min-width: 150px
+                            min-height: 225px
+                .selection
+                    display: flex
+                    .divider
+                        margin: 0 5px
+                    .item
+                        line-height: 1
+                        cursor: pointer
+                        position: relative
+                        &.active
+                            color: var(--color8)
+                            &:after
+                                content: ''
+                                position: absolute
+                                left: 0
+                                bottom: -5px
+                                transform: translateY(-50%)
+                                height: 2px
+                                width: 100%
+                                background-color: var(--color8)
+
             .users
                 padding: 20px
                 flex: 1

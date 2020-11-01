@@ -82,6 +82,7 @@ export default defineComponent({
     flex-direction: column
     align-items: center
     margin: auto
+    padding: 20px
     h4
         padding-bottom: 5px
     .room
