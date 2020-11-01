@@ -16,6 +16,9 @@ const state: State = {
 
 export default createStore({
     state,
+    getters: {
+        getUserName: state => () => state.user.displayName
+    },
     mutations: {
         setSocket: (state: State, socket) => {
             state.socket = socket;

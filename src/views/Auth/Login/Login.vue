@@ -11,6 +11,10 @@
         </div>
 
         <button type="submit">Login</button>
+
+        <div class="error" v-if="state.error">
+            {{ state.error}}
+        </div>
     </form>
 </template>
 
@@ -23,18 +27,19 @@ export default defineComponent({
     setup() {
         const state = reactive({
             email: '',
-            password: ''
+            password: '',
+            error: ''
         });
 
         const login = (e: Event) => {
             e.preventDefault();
             firebase.auth().signInWithEmailAndPassword(state.email, state.password)
                 .then(response => {
-                    console.log(response);
+                    state.error = response.user && !response.user.emailVerified ? 'Email not verified yet.' : '';
                 })
                 .catch(function(error: Error) {
-                    console.log('Error in login');
-                    console.error(error);
+                    console.error('Error in login', error);
+                    state.error = 'Error in login.'
                 });
         };
 
@@ -47,5 +52,6 @@ export default defineComponent({
 </script>
 
 <style lang="sass">
-
+.error
+    color: var(--color10)
 </style>

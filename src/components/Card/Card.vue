@@ -1,17 +1,63 @@
 <template>
-  <div class="card" v-bind:class="{ 'flip': flipped, 'disabled': disabled, [data.type]: true }" @click="cardClick()">
-    <div class="inner">
-      <div class="front">
-        <div class="text">{{ data.label }}</div>
+  <template v-if="!isMini">
+    <div class="card" v-bind:class="{ 'flip': state.flipped, 'disabled': disabled, [type]: true }" @click="cardClick()">
+      <div class="inner">
+        <div class="front">
+          <div class="text">{{ data.label }}</div>
+        </div>
+        <div class="back"></div>
       </div>
-      <div class="back"></div>
     </div>
-  </div>
+  </template>
+  <template v-else>
+    <div class="mini-card" v-bind:class="{ [type]: true }">
+
+    </div>
+  </template>
 </template>
 
 <script src="./Card.ts"></script>
 
 <style scoped>
+
+.mini-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  background-size: cover;
+}
+.mini-card.type-1 {
+  background-image: url('../../assets/cactus.png');
+}
+.mini-card.type-2 {
+  background-image: url('../../assets/bolos.png');
+}
+.mini-card.type-3 {
+  background-image: url('../../assets/halloween.png');
+  background-size: 105% 105%;
+}
+.mini-card.type-4 {
+  background-image: url('../../assets/planet.jpeg');
+  background-size: 105% 105%;
+}
+.mini-card.type-5 {
+  background-image: url('../../assets/planet1.jpeg');
+  background-size: 105% 105%;
+}
+.mini-card.type-6 {
+  background-image: url('../../assets/design-1.jpeg');
+  background-size: 105% 105%;
+}
+.mini-card.type-7 {
+  background-image: url('../../assets/design-2.jpeg');
+  background-size: cover;
+  background-position: center;
+}
+.mini-card.type-8 {
+  background-image: url('../../assets/design-3.jpeg');
+  background-size: 105% 105%;
+}
+
 
 .card {
   --front-card-background-color: linear-gradient(
@@ -66,6 +112,7 @@
   background-size: 100% 100%;
 }
 
+/* BACK */
 .card.type-1 .inner .back {
   background-image: url('../../assets/cactus.png');
 
@@ -77,17 +124,17 @@
 .card.type-3 .inner .back {
   background-image: url('../../assets/halloween.png');
   background-size: 105% 105%;
-  background-position: -3px -5px;
+  background-position: -6px 0px;
 }
 .card.type-4 .inner .back {
   background-image: url('../../assets/planet.jpeg');
   background-size: 105% 105%;
-  background-position: -3px -5px;
+  background-position: -6px 0px;
 }
 .card.type-5 .inner .back {
   background-image: url('../../assets/planet1.jpeg');
   background-size: 105% 105%;
-  background-position: -3px -5px;
+  background-position: -6px 0px;
 }
 .card.type-6 .inner .back {
   background-image: url('../../assets/design-1.jpeg');
@@ -100,6 +147,45 @@
   background-position: -3px -5px;
 }
 .card.type-8 .inner .back {
+  background-image: url('../../assets/design-3.jpeg');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+
+/* FRONT */
+.card.type-1 .inner .front::before {
+  background-image: url('../../assets/cactus.png');
+}
+.card.type-2 .inner .front::before {
+  background-image: url('../../assets/bolos.png');
+}
+
+.card.type-3 .inner .front::before {
+  background-image: url('../../assets/halloween.png');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+.card.type-4 .inner .front::before {
+  background-image: url('../../assets/planet.jpeg');
+  background-size: 105% 105%;
+  background-position: center 0;
+}
+.card.type-5 .inner .front::before {
+  background-image: url('../../assets/planet1.jpeg');
+  background-size: 105% 105%;
+  background-position: center 0;
+}
+.card.type-6 .inner .front::before {
+  background-image: url('../../assets/design-1.jpeg');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+.card.type-7 .inner .front::before {
+  background-image: url('../../assets/design-2.jpeg');
+  background-size: 105% 105%;
+  background-position: -3px -5px;
+}
+.card.type-8 .inner .front::before {
   background-image: url('../../assets/design-3.jpeg');
   background-size: 105% 105%;
   background-position: -3px -5px;
@@ -121,7 +207,8 @@
   transform: translateX(-50%) translateY(-50%);
   left: 50%;
   top: 50%;
-  background: var(--front-card-background-color);
+  /* background: var(--front-card-background-color); */
+  background-size: 100% 100%;
   border-radius: 12px;
   border: 3px solid black;
 }

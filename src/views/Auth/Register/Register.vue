@@ -22,10 +22,12 @@
 <script lang="ts">
 import firebase from 'firebase/app';
 import { defineComponent, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'Register',
     setup() {
+        const router = useRouter();
         const state = reactive({
             email: '',
             password: '',
@@ -35,17 +37,20 @@ export default defineComponent({
         const register = (e: Event) => {
             e.preventDefault();
             firebase.auth().createUserWithEmailAndPassword(state.email, state.password)
-            .then(response => {
+                .then(response => {
                     const user = firebase.auth().currentUser;
                     if (user) {
                         const userId = user.uid;
                         user.updateProfile({ displayName: state.name });
                         firebase.database().ref(`/users/${userId}`).set({
                             id: userId,
-                            name: state.name
+                            name: state.name,
+                            deckSelection: 'type-1'
                         });
+                        user.sendEmailVerification();
                     }
                     console.log('Register successfully');
+                    router.push({ name: 'Login' });
                 })
                 .catch(function(error) {
                     console.error('Error register user');

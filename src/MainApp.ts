@@ -33,7 +33,13 @@ export default defineComponent({
 
         firebaseApp.auth().onAuthStateChanged((user) => {
             if (user) {
-                console.log('User-logged');
+                if (!user.emailVerified) {
+                    console.error('No email verified');
+                    firebaseApp.auth().signOut();
+                    router.push({ name: 'Login' });
+                    return;
+                }
+                console.log('User-logged', user);
                 store.commit('setUser', user);
                 router.push({ name: 'Rooms'});
                 return;

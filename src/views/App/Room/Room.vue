@@ -17,6 +17,7 @@
                             <div class="card-wrapper">
                                 <card
                                     :data="{ label: state.room.userVotes[user.id], points: state.room.userVotes[user.id], type: 'type-2' }"
+                                    :type="user.deckSelection"
                                     :disabled="true"
                                     :flipped="cardsFlipped"
                                 />
@@ -40,7 +41,9 @@
                     <h3>Users list: </h3>
                     <div class="user" v-for="(user, index) in state.room.users" v-bind:key="index">
                         <!-- TODO: Add card type from user -->
-                        <div class="mini-card"></div>
+                        <div class="mini-card-wrapper">
+                            <card :isMini="true" :type="user.deckSelection"/>
+                        </div>
                         <div class="user-name">{{ user.name }}</div>
                         <div v-if="user.id === state.room.adminUser" class="is-admin">
                             <img :src="require('@/assets/crown.svg')" alt="admin">
@@ -74,14 +77,14 @@
 
         <div class="user-cards" v-bind:class="{ 'disabled': state.room.status === 'ready-to-vote' || state.room.status === 'voted' }">
             <div class="card-wrapper" v-for="(card, index) in state.cards" v-bind:key="index">
-                <card :data="card" :disabled="!!state.waitingUsers" @card-click="vote" />
+                <card :data="card" :type="state.deckSelection" :disabled="!!state.waitingUsers" @card-click="vote" :flipped="false" :noFlip="true"/>
             </div>
         </div>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
+import { defineComponent, onUnmounted, reactive, ref } from 'vue';
 import firebase, { User } from 'firebase/app';
 import { useStore } from 'vuex';
 import { State } from '@/store';
@@ -102,6 +105,7 @@ export default defineComponent({
             wsUser: store.state.user,
             waitingUsers: false,
             cards: store.state.cards,
+            deckSelection: 'type-1'
         });
         const cardsFlipped = ref(true);
         const socket = store.state.socket;
@@ -111,7 +115,6 @@ export default defineComponent({
 
             socket.emit('get-room', roomId);
             socket.on('send-room', (data: any) => {
-                console.log(data);
                 state.room = data;
             });
 
@@ -136,6 +139,12 @@ export default defineComponent({
                 state.room = data;
             });
 
+            firebase.database().ref(`users/${state.wsUser.uid}/deckSelection`).on('value', _deck => {
+                const deck = _deck.val();
+                if (deck) {
+                    state.deckSelection = deck;
+                }
+            });
 
             const handleVoteButton = (start: boolean) => {
                 if (start) {
@@ -159,6 +168,11 @@ export default defineComponent({
                 state.waitingUsers = false;
                 socket.emit('clear-voting', roomId);
             };
+
+            onUnmounted(() => {
+                socket.emit('leave-room', { roomId });
+                firebase.database().ref(`users/${state.wsUser.uid}/deckSelection`).off();
+            })
 
             return {
                 state,

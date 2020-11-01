@@ -33,6 +33,11 @@ const routes: Array<RouteRecordRaw> = [
                 path: ':roomId',
                 name: 'roomId',
                 component: () => import(/* webpackChunkName: "rooms" */ '../views/App/Room/Room.vue'),
+            },
+            {
+                path: 'profile',
+                name: 'Profile',
+                component: () => import(/* webpackChunkName: "profile" */ '../views/App/Profile/Profile.vue'),
             }
         ]
     }

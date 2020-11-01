@@ -30,6 +30,11 @@ button
     cursor: pointer
     border-radius: 6px
     transition: 0.5s
+    &:disabled
+        cursor: not-allowed
+        background-color: var(--color2)
+        &:hover
+            opacity: 1
     &:hover
         opacity: 0.6
 
@@ -41,6 +46,12 @@ input
     border: 0
     padding: 5px 10px
     color: var(--color4)
+
+.loading-container
+    display: flex
+    justify-content: center
+    align-items: center
+    flex: 1
 
 .loading
     left: 0

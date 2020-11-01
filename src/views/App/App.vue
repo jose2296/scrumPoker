@@ -21,12 +21,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from 'vue';
+import { computed, defineComponent, reactive, ref, watch } from 'vue';
 import firebase from 'firebase/app';
-import { useStore } from 'vuex';
+import { mapGetters, useStore } from 'vuex';
 import { State } from '@/store';
 import io from 'socket.io-client';
 import Dropdown from "@/components/Dropdown/Dropdown.vue";
+import { useRouter } from 'vue-router';
+
+enum AvatarOptions {
+    profile = 'Profile',
+    rooms = 'Rooms',
+    logout = 'Logout'
+}
 
 export default defineComponent({
     name: 'App',
@@ -35,9 +42,14 @@ export default defineComponent({
     },
     setup() {
         const store = useStore<State>();
+        const router = useRouter();
         const state = reactive({
-            userName: store.state.user.displayName,
-            options: ['Profile', 'Logout'] // TODO: Add enums for this options
+            userName: computed(() => store.state.user.displayName),
+            options: [
+                AvatarOptions.profile,
+                AvatarOptions.rooms,
+                AvatarOptions.logout,
+            ] // TODO: Add enums for this options
         });
 
         const logout = () => {
@@ -60,13 +72,24 @@ export default defineComponent({
         });
 
         store.commit('setSocket', socket);
-        const dropdownOptionClicked = (optionSelected: string) => {
-            console.log(optionSelected);
 
-            if (optionSelected === 'Logout') {
+        const dropdownOptionClicked = (optionSelected: string) => {
+            if (optionSelected === AvatarOptions.profile) {
+                router.push({ name: 'Profile' });
+                return;
+            }
+
+            if (optionSelected === AvatarOptions.rooms) {
+                router.push({ name: 'Rooms' });
+                return;
+            }
+
+            if (optionSelected === AvatarOptions.logout) {
                 logout();
+                return;
             }
         };
+
         return {
             state,
             dropdownOptionClicked
