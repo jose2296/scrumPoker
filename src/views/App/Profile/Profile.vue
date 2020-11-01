@@ -115,7 +115,7 @@ export default defineComponent({
         };
 
         onUnmounted(() => {
-            firebase.database().ref(`users/${userId}/deckSelection`).off();
+            // firebase.database().ref(`users/${userId}/deckSelection`).off();
         })
 ;
 

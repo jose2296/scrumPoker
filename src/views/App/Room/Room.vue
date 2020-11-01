@@ -171,7 +171,7 @@ export default defineComponent({
 
             onUnmounted(() => {
                 socket.emit('leave-room', { roomId });
-                firebase.database().ref(`users/${state.wsUser.uid}/deckSelection`).off();
+                // firebase.database().ref(`users/${state.wsUser.uid}/deckSelection`).off();
             })
 
             return {
